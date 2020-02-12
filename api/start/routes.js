@@ -20,5 +20,5 @@ Route.group(() => {
   Route.post('auth/login', 'AuthController.login')
   Route.post('register', 'UserController.store')
   Route.post('account', 'AccountController.store').middleware('auth')
-  Route.resource('posts', 'PostController').middleware(['auth', 'account'])
+  Route.resource('posts', 'PostController').middleware(['auth'])
 }).prefix('api/v1')
