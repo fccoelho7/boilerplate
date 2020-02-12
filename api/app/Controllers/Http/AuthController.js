@@ -3,12 +3,12 @@
 const User = use('App/Models/User')
 
 class AuthController {
-  async login({ auth, request, response }) {
-    const { email, password } = request.all()
+  async login({ auth, request }) {
+    const { email, password } = request.only(['email', 'password'])
     const token = await auth.attempt(email, password)
     const user = await User.findBy({ email })
 
-    response.json({ token, user })
+    return { token, user }
   }
 }
 

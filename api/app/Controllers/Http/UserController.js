@@ -3,15 +3,15 @@
 const User = use('App/Models/User')
 
 class UserController {
-  async store({ request, response }) {
-    const { email, password, firstName, lastName } = request.all()
+  async store({ request }) {
+    const data = request.only(['email', 'password', 'firstName', 'lastName'])
     const user = new User()
 
-    user.merge({ email, password, firstName, lastName })
+    user.merge(data)
 
-    const data = await user.save()
+    await user.save()
 
-    return response.json(data)
+    return user
   }
 }
 
