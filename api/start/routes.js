@@ -16,15 +16,9 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/', () => {
-  return { greeting: 'Hello world in JSON' }
-})
-
 Route.group(() => {
   Route.post('auth/login', 'AuthController.login')
   Route.post('register', 'UserController.store')
-  Route.get('xunda', 'UserController.xunda').middleware(['auth', 'account'])
   Route.post('account', 'AccountController.store').middleware('auth')
-
-  // Route.resource('blog', 'BlogController').middleware('auth')
+  Route.resource('posts', 'PostController').middleware(['auth', 'account'])
 }).prefix('api/v1')
