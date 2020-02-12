@@ -23,6 +23,8 @@ Route.get('/', () => {
 Route.group(() => {
   Route.post('auth/login', 'AuthController.login')
   Route.post('register', 'UserController.store')
+  Route.get('xunda', 'UserController.xunda').middleware(['auth', 'account'])
+  Route.post('account', 'AccountController.store').middleware('auth')
 
   // Route.resource('blog', 'BlogController').middleware('auth')
 }).prefix('api/v1')
