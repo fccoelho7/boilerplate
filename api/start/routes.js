@@ -16,11 +16,18 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
+/* Public Routes */
 Route.group(() => {
-  Route.post('auth/login', 'AuthController.login')
+  Route.post('login', 'AuthController.login')
   Route.post('register', 'UserController.store')
-  Route.post('account', 'AccountController.store').middleware('auth')
-  Route.get('me', 'UserController.show').middleware('auth')
-  Route.put('me', 'UserController.update').middleware('auth')
-  Route.resource('posts', 'PostController').middleware('auth')
 }).prefix('api/v1')
+
+/* Protected Routes */
+Route.group(() => {
+  Route.post('account', 'AccountController.store')
+  Route.get('me', 'UserController.show')
+  Route.put('me', 'UserController.update')
+  Route.resource('posts', 'PostController').apiOnly()
+})
+  .prefix('api/v1')
+  .middleware('auth')
