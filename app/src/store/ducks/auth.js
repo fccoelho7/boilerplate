@@ -1,28 +1,26 @@
-import http from '../../utils/http'
+import api from '../../services/api'
 
 // Actions
+const GET_PROFILE = 'my-app/auth/GET_PROFILE'
 const LOGIN = 'my-app/auth/LOGIN'
 const LOGOUT = 'my-app/auth/LOGOUT'
 
 const initialState = {
-  isLogged: false,
-  token: null
+  user: null
 }
 
 // Reducer
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
+    case GET_PROFILE:
+      return { user: action.payload }
     case LOGIN:
-      const { user, token: auth } = action.payload
-      const { token } = auth
-
+      const { user, token } = action.payload
       localStorage.setItem('token', token)
-
-      return { isLogged: true, user }
+      return { user }
     case LOGOUT:
       localStorage.removeItem('token')
-
-      return { isLogged: false, user: null }
+      return { user: null }
     default:
       return state
   }
@@ -30,12 +28,13 @@ export default function reducer(state = initialState, action = {}) {
 
 // Action Creators
 export const login = payload => async dispatch => {
-  try {
-    const { data } = await http.post('/login', payload)
-    return dispatch({ type: LOGIN, payload: data })
-  } catch (error) {
-    return dispatch({ type: LOGIN, error })
-  }
+  const { data } = await api.post('/login', payload)
+  return dispatch({ type: LOGIN, payload: data })
 }
 
-export const logout = { type: LOGOUT }
+export const logout = () => ({ type: LOGOUT })
+
+export const getProfile = () => async dispatch => {
+  const { data } = await api.get('/me')
+  return dispatch({ type: GET_PROFILE, payload: data })
+}
