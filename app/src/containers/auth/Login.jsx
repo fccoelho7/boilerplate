@@ -1,18 +1,23 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
+import { useNavigate } from 'react-router-dom'
 
 import { login } from '../../store/ducks/auth'
 
 const Auth = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: ''
     },
-    onSubmit: values => dispatch(login(values))
+    onSubmit: async values => {
+      await dispatch(login(values))
+      navigate('/')
+    }
   })
 
   return (
