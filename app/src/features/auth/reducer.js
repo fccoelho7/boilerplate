@@ -2,22 +2,27 @@ import api from '../../services/api'
 
 // Actions
 const GET_PROFILE = 'auth/GET_PROFILE'
-const LOGIN = 'auth/LOGIN'
+const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS'
+const LOGIN_FAILED = 'auth/LOGIN_FAILED'
 const LOGOUT = 'auth/LOGOUT'
 
 const initialState = {
-  user: null
+  user: null,
+  errors: []
 }
 
 // Reducer
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case GET_PROFILE:
-      return { user: action.payload }
-    case LOGIN:
+    case LOGIN_SUCCESS:
       const { user, token } = action.payload
       localStorage.setItem('token', token)
-      return { user }
+      return { user, errors: [] }
+    case LOGIN_FAILED:
+      const errors = action.payload
+      return { errors }
+    case GET_PROFILE:
+      return { user: action.payload }
     case LOGOUT:
       localStorage.removeItem('token')
       return { user: null }
@@ -28,8 +33,13 @@ export default function reducer(state = initialState, action = {}) {
 
 // Action Creators
 export const login = payload => async dispatch => {
-  const { data } = await api.post('/login', payload)
-  return dispatch({ type: LOGIN, payload: data })
+  try {
+    const { data } = await api.post('/login', payload)
+    dispatch({ type: LOGIN_SUCCESS, payload: data })
+  } catch (error) {
+    const { data } = error.response
+    dispatch({ type: LOGIN_FAILED, payload: data })
+  }
 }
 
 export const logout = () => ({ type: LOGOUT })

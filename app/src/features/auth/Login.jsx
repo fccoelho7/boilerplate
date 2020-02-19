@@ -1,45 +1,56 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { useFormik } from 'formik'
+import { useDispatch, useSelector } from 'react-redux'
+import { Formik, Form, Field } from 'formik'
 import { useNavigate } from 'react-router-dom'
+import * as Yup from 'yup'
 
 import { login } from './reducer'
 
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email')
+    .required('Email required'),
+  password: Yup.string().required('Password required')
+})
+
 const Auth = () => {
+  const auth = useSelector(state => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: ''
-    },
-    onSubmit: async values => {
-      await dispatch(login(values))
-      navigate('/')
-    }
-  })
-
   return (
-    <form onSubmit={formik.handleSubmit}>
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="text"
-        onChange={formik.handleChange}
-        value={formik.values.email}
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        onChange={formik.handleChange}
-        value={formik.values.password}
-      />
-      <button type="submit">Login</button>
-    </form>
+    <>
+      <Formik
+        initialValues={{
+          email: '',
+          password: ''
+        }}
+        validationSchema={LoginSchema}
+        onSubmit={async values => {
+          await dispatch(login(values))
+          navigate('/')
+        }}
+      >
+        {({ errors, touched }) => (
+          <Form>
+            <div>
+              <label htmlFor="email">Email</label>
+              <Field name="email" type="text" />
+              {errors.email && touched.email && <p>{errors.email}</p>}
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <Field name="password" type="password" />
+              {errors.password && touched.password && <p>{errors.password}</p>}
+            </div>
+            <div className="errors">
+              {auth.errors && auth.errors.map(error => <p>{error.message}</p>)}
+            </div>
+            <button type="submit">Login</button>
+          </Form>
+        )}
+      </Formik>
+    </>
   )
 }
 
