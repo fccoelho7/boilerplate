@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { getProfile, logout } from './store/ducks/auth'
+import { getProfile, logout } from './features/auth/reducer'
 
 function Root() {
   const auth = useSelector(state => state.auth)
@@ -15,6 +15,8 @@ function Root() {
     }
 
     fetchUser()
+
+    /* eslint-disable-next-line */
   }, [])
 
   const onLogout = async () => {

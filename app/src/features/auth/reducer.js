@@ -1,9 +1,9 @@
 import api from '../../services/api'
 
 // Actions
-const GET_PROFILE = 'my-app/auth/GET_PROFILE'
-const LOGIN = 'my-app/auth/LOGIN'
-const LOGOUT = 'my-app/auth/LOGOUT'
+const GET_PROFILE = 'auth/GET_PROFILE'
+const LOGIN = 'auth/LOGIN'
+const LOGOUT = 'auth/LOGOUT'
 
 const initialState = {
   user: null

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import { useNavigate } from 'react-router-dom'
 
-import { login } from '../../store/ducks/auth'
+import { login } from './reducer'
 
 const Auth = () => {
   const dispatch = useDispatch()
