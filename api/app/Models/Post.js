@@ -7,10 +7,6 @@ class Post extends Model {
   user() {
     return this.belongsTo('App/Models/User')
   }
-
-  account() {
-    return this.belongsTo('App/Models/Account')
-  }
 }
 
 module.exports = Post

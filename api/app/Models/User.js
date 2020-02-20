@@ -35,8 +35,8 @@ class User extends Model {
     return this.hasMany('App/Models/Token')
   }
 
-  account() {
-    return this.belongsTo('App/Models/Account')
+  posts() {
+    return this.hasMany('App/Models/Post')
   }
 }
 

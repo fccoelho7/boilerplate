@@ -1,55 +1,45 @@
 'use strict'
 
-const Post = use('App/Models/Post')
-
 class PostController {
   async index({ auth }) {
-    const posts = await Post.query()
-      .where('account_id', auth.user.account_id)
-      .fetch()
+    const { user } = auth
 
-    return posts
+    return await user.posts().fetch()
   }
 
   async show({ auth, params }) {
-    const posts = await Post.query()
-      .where('account_id', auth.user.account_id)
+    const { user } = auth
+
+    return await user
+      .posts()
       .where('id', params.id)
       .first()
-
-    return posts
   }
 
   async store({ auth, request }) {
-    const data = request.only(['title', 'content'])
     const { user } = auth
-    const post = new Post()
+    const data = request.only(['title', 'content'])
 
-    post.merge({
-      ...data,
-      user_id: user.id,
-      account_id: user.account_id
-    })
-
-    await post.save()
+    const post = await user.posts().create(data)
 
     return post
   }
 
-  async update({ params, request }) {
+  async update({ auth, params, request }) {
+    const { user } = auth
     const data = request.only(['title', 'content'])
-    const post = await Post.find(params.id)
 
-    post.merge(data)
-
-    await post.save()
-
-    return post
+    return await user
+      .posts()
+      .where('id', params.id)
+      .update(data)
   }
 
   async destroy({ auth, params }) {
-    await Post.query()
-      .where('account_id', auth.user.account_id)
+    const { user } = auth
+
+    return await user
+      .posts()
       .where('id', params.id)
       .delete()
   }

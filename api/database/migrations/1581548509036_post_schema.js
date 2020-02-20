@@ -16,13 +16,6 @@ class PostSchema extends Schema {
         .inTable('user')
         .onUpdate('CASCADE')
         .onDelete('CASCADE')
-      table
-        .integer('account_id')
-        .unsigned()
-        .references('id')
-        .inTable('account')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
       table.timestamps()
     })
   }

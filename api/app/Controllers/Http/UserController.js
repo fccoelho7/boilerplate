@@ -17,14 +17,12 @@ class UserController {
   }
 
   async show({ auth }) {
-    const user = await User.find(auth.user.id)
-
-    return user
+    return auth.user
   }
 
   async update({ auth, request }) {
+    const { user } = auth
     const data = request.only(['password', 'firstName', 'lastName'])
-    const user = await User.find(auth.user.id)
 
     user.merge(data)
 

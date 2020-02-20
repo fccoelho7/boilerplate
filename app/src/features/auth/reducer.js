@@ -15,23 +15,25 @@ const initialState = {
 
 // Reducer
 export default function reducer(state = initialState, action = {}) {
+  const { payload } = action
+
   switch (action.type) {
     case LOGIN_SUCCESS:
       localStorage.setItem('token', action.payload.token)
-      return { user: action.payload.user, errors: [] }
+      return { user: payload.user, errors: [] }
 
     case LOGIN_FAILED:
-      return { errors: action.payload }
+      return { errors: payload.errors }
 
     case SIGNUP_SUCCESS:
       localStorage.setItem('token', action.payload.token)
-      return { user: action.payload.user, errors: [] }
+      return { user: payload.user, errors: [] }
 
     case SIGNUP_FAILED:
-      return { errors: [action.payload.error] }
+      return { errors: [payload.errors] }
 
     case GET_PROFILE:
-      return { user: action.payload }
+      return { ...state, user: payload.user }
 
     case LOGOUT:
       localStorage.removeItem('token')
@@ -49,7 +51,7 @@ export const login = payload => async dispatch => {
     dispatch({ type: LOGIN_SUCCESS, payload: data })
   } catch (error) {
     const { data } = error.response
-    dispatch({ type: LOGIN_FAILED, payload: data })
+    dispatch({ type: LOGIN_FAILED, payload: { errors: data } })
   }
 }
 
@@ -59,7 +61,7 @@ export const signup = payload => async dispatch => {
     dispatch({ type: SIGNUP_SUCCESS, payload: data })
   } catch (error) {
     const { data } = error.response
-    dispatch({ type: SIGNUP_FAILED, payload: data })
+    dispatch({ type: SIGNUP_FAILED, payload: { errors: data } })
   }
 }
 

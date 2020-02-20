@@ -24,7 +24,6 @@ Route.group(() => {
 
 /* Protected Routes */
 Route.group(() => {
-  Route.post('account', 'AccountController.store')
   Route.get('me', 'UserController.show')
   Route.put('me', 'UserController.update')
   Route.resource('posts', 'PostController').apiOnly()
