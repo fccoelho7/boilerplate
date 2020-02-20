@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Formik, Form, Field } from 'formik'
 import { useNavigate } from 'react-router-dom'
 import * as Yup from 'yup'
 
 import { login } from './reducer'
+import { isAuthenticated } from '../../services/auth'
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -13,10 +14,14 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required('Password required')
 })
 
-const Auth = () => {
+const Login = () => {
   const auth = useSelector(state => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated()) navigate('/')
+  })
 
   return (
     <>
@@ -26,10 +31,7 @@ const Auth = () => {
           password: ''
         }}
         validationSchema={LoginSchema}
-        onSubmit={async values => {
-          await dispatch(login(values))
-          navigate('/')
-        }}
+        onSubmit={values => dispatch(login(values))}
       >
         {({ errors, touched }) => (
           <Form>
@@ -44,7 +46,10 @@ const Auth = () => {
               {errors.password && touched.password && <p>{errors.password}</p>}
             </div>
             <div className="errors">
-              {auth.errors && auth.errors.map(error => <p>{error.message}</p>)}
+              {auth.errors &&
+                auth.errors.map((error, idx) => (
+                  <p key={idx}>{error.message}</p>
+                ))}
             </div>
             <button type="submit">Login</button>
           </Form>
@@ -54,4 +59,4 @@ const Auth = () => {
   )
 }
 
-export default Auth
+export default Login

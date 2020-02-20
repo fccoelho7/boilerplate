@@ -11,15 +11,17 @@ function Root() {
 
   useEffect(() => {
     async function fetchUser() {
-      await dispatch(getProfile())
+      try {
+        if (!auth.user) await dispatch(getProfile())
+      } catch {
+        navigate('/login')
+      }
     }
 
     fetchUser()
-
-    /* eslint-disable-next-line */
   }, [])
 
-  const onLogout = async () => {
+  const onLogout = () => {
     dispatch(logout())
     navigate('/login')
   }

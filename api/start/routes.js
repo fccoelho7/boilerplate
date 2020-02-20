@@ -19,7 +19,7 @@ const Route = use('Route')
 /* Public Routes */
 Route.group(() => {
   Route.post('login', 'AuthController.login')
-  Route.post('register', 'UserController.store')
+  Route.post('signup', 'UserController.store')
 }).prefix('api/v1')
 
 /* Protected Routes */

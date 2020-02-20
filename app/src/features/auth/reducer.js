@@ -4,6 +4,8 @@ import api from '../../services/api'
 const GET_PROFILE = 'auth/GET_PROFILE'
 const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS'
 const LOGIN_FAILED = 'auth/LOGIN_FAILED'
+const SIGNUP_SUCCESS = 'auth/SIGNUP_SUCCESS'
+const SIGNUP_FAILED = 'auth/SIGNUP_FAILED'
 const LOGOUT = 'auth/LOGOUT'
 
 const initialState = {
@@ -15,17 +17,26 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOGIN_SUCCESS:
-      const { user, token } = action.payload
-      localStorage.setItem('token', token)
-      return { user, errors: [] }
+      localStorage.setItem('token', action.payload.token)
+      return { user: action.payload.user, errors: [] }
+
     case LOGIN_FAILED:
-      const errors = action.payload
-      return { errors }
+      return { errors: action.payload }
+
+    case SIGNUP_SUCCESS:
+      localStorage.setItem('token', action.payload.token)
+      return { user: action.payload.user, errors: [] }
+
+    case SIGNUP_FAILED:
+      return { errors: [action.payload.error] }
+
     case GET_PROFILE:
       return { user: action.payload }
+
     case LOGOUT:
       localStorage.removeItem('token')
-      return { user: null }
+      return { ...state, user: null }
+
     default:
       return state
   }
@@ -42,9 +53,19 @@ export const login = payload => async dispatch => {
   }
 }
 
+export const signup = payload => async dispatch => {
+  try {
+    const { data } = await api.post('/signup', payload)
+    dispatch({ type: SIGNUP_SUCCESS, payload: data })
+  } catch (error) {
+    const { data } = error.response
+    dispatch({ type: SIGNUP_FAILED, payload: data })
+  }
+}
+
 export const logout = () => ({ type: LOGOUT })
 
 export const getProfile = () => async dispatch => {
   const { data } = await api.get('/me')
-  return dispatch({ type: GET_PROFILE, payload: data })
+  dispatch({ type: GET_PROFILE, payload: data })
 }

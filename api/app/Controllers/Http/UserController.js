@@ -3,7 +3,7 @@
 const User = use('App/Models/User')
 
 class UserController {
-  async store({ request }) {
+  async store({ auth, request }) {
     const data = request.only(['email', 'password', 'firstName', 'lastName'])
     const user = new User()
 
@@ -11,7 +11,9 @@ class UserController {
 
     await user.save()
 
-    return user
+    const { token } = await auth.generate(user)
+
+    return { user, token }
   }
 
   async show({ auth }) {
