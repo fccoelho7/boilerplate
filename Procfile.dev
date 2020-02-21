@@ -1,2 +1,2 @@
-api: cd api && npm start
+api: cd api && adonis serve --dev
 app: cd app && npm start

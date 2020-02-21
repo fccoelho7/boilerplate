@@ -69,5 +69,5 @@ export const logout = () => ({ type: LOGOUT })
 
 export const getProfile = () => async dispatch => {
   const { data } = await api.get('/me')
-  dispatch({ type: GET_PROFILE, payload: data })
+  dispatch({ type: GET_PROFILE, payload: { user: data } })
 }
