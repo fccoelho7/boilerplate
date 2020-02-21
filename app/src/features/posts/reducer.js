@@ -21,6 +21,9 @@ export default function reducer(state = initialState, action = {}) {
     case DELETE_POST:
       return { list: state.list.filter(post => post.id !== payload.id) }
 
+    case CREATE_POST:
+      return { list: { ...state.list, ...payload.post } }
+
     default:
       return state
   }
@@ -30,6 +33,11 @@ export default function reducer(state = initialState, action = {}) {
 export const fetchPosts = () => async dispatch => {
   const { data } = await api.get('/posts')
   dispatch({ type: FETCH_POSTS, payload: { posts: data } })
+}
+
+export const deletePost = id => async dispatch => {
+  await api.delete(`/posts/${id}`)
+  dispatch({ type: DELETE_POST, payload: { id } })
 }
 
 export const deletePost = id => async dispatch => {
