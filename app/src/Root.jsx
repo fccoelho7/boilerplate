@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { getProfile, logout } from './features/auth/reducer'
-import { fetchPosts } from './features/posts/reducer'
+import { fetchPosts, deletePost } from './features/posts/reducer'
 
 function Root() {
   const auth = useSelector(state => state.auth)
@@ -44,7 +44,12 @@ function Root() {
           ? 'Fetching posts...'
           : posts?.list.map(post => (
               <div className="post" key={post.id}>
-                <h3>{post?.title}</h3>
+                <h3>
+                  {post?.title}{' '}
+                  <button onClick={() => dispatch(deletePost(post?.id))}>
+                    ×
+                  </button>
+                </h3>
                 <i>{post?.created_at}</i>
                 <p>{post?.content}</p>
               </div>

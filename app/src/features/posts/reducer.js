@@ -1,13 +1,12 @@
 import api from '../../services/api'
 
 // Actions
-const FETCHING_POSTS = 'auth/FETCHING_POSTS'
-const FETCH_POSTS_SUCCESS = 'auth/FETCH_POSTS_SUCCESS'
-const FETCH_POSTS_FAILED = 'auth/FETCH_POSTS_FAILED'
+const FETCH_POSTS = 'auth/FETCH_POSTS'
+const DELETE_POST = 'auth/DELETE_POST'
 
 const initialState = {
   list: [],
-  fetching: false,
+  fetching: true,
   errors: []
 }
 
@@ -16,14 +15,11 @@ export default function reducer(state = initialState, action = {}) {
   const { payload } = action
 
   switch (action.type) {
-    case FETCHING_POSTS:
-      return { fetching: true }
-
-    case FETCH_POSTS_SUCCESS:
+    case FETCH_POSTS:
       return { list: payload.posts, fetching: false }
 
-    case FETCH_POSTS_FAILED:
-      return { errors: payload.errors, fetching: false }
+    case DELETE_POST:
+      return { list: state.list.filter(post => post.id !== payload.id) }
 
     default:
       return state
@@ -31,13 +27,12 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 // Action Creators
-export const fetchPosts = payload => async dispatch => {
-  try {
-    dispatch({ type: FETCHING_POSTS })
-    const { data } = await api.get('/posts', payload)
-    dispatch({ type: FETCH_POSTS_SUCCESS, payload: { posts: data } })
-  } catch (error) {
-    const { data } = error.response
-    dispatch({ type: FETCH_POSTS_FAILED, payload: { errors: data } })
-  }
+export const fetchPosts = () => async dispatch => {
+  const { data } = await api.get('/posts')
+  dispatch({ type: FETCH_POSTS, payload: { posts: data } })
+}
+
+export const deletePost = id => async dispatch => {
+  await api.delete(`/posts/${id}`)
+  dispatch({ type: DELETE_POST, payload: { id } })
 }
